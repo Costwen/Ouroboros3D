@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description"
+        content="Ouroboros3D, a unified 3D generation framework, which integrates diffusion-based multi-view image generation and 3D reconstruction into a recursive diffusion process.">
+  <meta name="keywords" content="Ouroboros3D, Image-to-3D, Image-to-Multiview">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ouroboros3D: Image-to-3D Generation via 3D-aware Recursive Diffusion</title>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+        rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="icon" href="./static/images/favicon.svg">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+</head>
+<body>
+
+<style>
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+</style>
+
+<nav class="navbar" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
+  </div>
+  <div class="navbar-menu">
+    <div class="navbar-start" style="flex-grow: 1; justify-content: center;">
+      <a class="navbar-item" href="https://github.com/huanngzh">
+      <span class="icon">
+          <i class="fas fa-home"></i>
+      </span>
+      </a>
+
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link">
+          More Research
+        </a>
+        <div class="navbar-dropdown">
+          <a class="navbar-item" href="https://huanngzh.github.io/EpiDiff/">
+            EpiDiff
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-1 publication-title">Ouroboros3D: Image-to-3D Generation via 3D-aware Recursive Diffusion</h1>
+          <!-- <h2 class="title is-3 publication-title" style="color:#008bf5;">CVPR 2024</h2> -->
+          <div class="is-size-5 publication-authors">
+            <a href="https://github.com/Costwen" target="_blank">Hao Wen</a><sup>1*</sup>,
+            <a href="https://github.com/huanngzh" target="_blank">Zehuan Huang</a><sup>1,3*</sup>,
+            <a href="https://wyhsirius.github.io" target="_blank">Yaohui Wang</a><sup>2</sup>,
+            <a href="https://scholar.google.com/citations?user=3fWSC8YAAAAJ" target="_blank">Xinyuan Chen</a><sup>2</sup>,
+            <a href="https://scholar.google.com/citations?user=gFtI-8QAAAAJ" target="_blank">Yu Qiao</a><sup>2</sup>,
+            <a href="https://scholar.google.com/citations?user=_8lB7xcAAAAJ" target="_blank">Lu Sheng</a><sup>1✉</sup></h6>
+          </div>
+
+          <div class="is-size-5 publication-authors">
+            <sup>1</sup>Beihang University &nbsp;&nbsp;
+            <sup>2</sup>Shanghai AI Laboratory &nbsp;&nbsp;
+            <sup>3</sup>VAST <br>
+            <sup>*</sup>Equal Contribution &nbsp;&nbsp;
+            <sup>✉</sup>Corresponding Author
+          </div>
+
+          <div class="column has-text-centered">
+            <div class="publication-links">
+              <!-- PDF Link. -->
+              <span class="link-block">
+                <a href="" target="_blank"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                  </span>
+                  <span>Paper</span>
+                </a>
+              </span>
+              <span class="link-block">
+                <a href="" target="_blank"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="ai ai-arxiv"></i>
+                  </span>
+                  <span>arXiv</span>
+                </a>
+              </span>
+              <!-- Video Link. -->
+              <!-- <span class="link-block">
+                <a href="https://www.youtube.com/watch?v=MrKrnHhk8IA"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-youtube"></i>
+                  </span>
+                  <span>Video</span>
+                </a>
+              </span> -->
+              <!-- Code Link. -->
+              <span class="link-block">
+                <a href="https://github.com/Costwen/Ouroboros3D" target="_blank"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-github"></i>
+                  </span>
+                  <span>Code</span>
+                  </a>
+              </span>
+              <!-- Model Link. -->
+              <span class="link-block">
+                <a href="" target="_blank"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fa fa-database"></i>
+                  </span>
+                  <span>Model</span>
+                  </a>
+              <!-- Demo Link. -->
+              <span class="link-block">
+                <a href=""
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="far fa-smile"></i>
+                  </span>
+                  <span>Demo (Coming soon)</span>
+                  </a>
+              </span>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <video width="100%" playsinline="" autoplay="autoplay" loop="loop" preload="" muted="">
+        <source src="./static/video/teaser.mp4" type="video/mp4">
+      </video>
+      <h2 class="subtitle has-text-centered">
+        <span class="dnerf">Ouroboros3D</span>
+      </h2>
+    </div>
+  </div>
+</section>
+
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <!-- Abstract. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+            Existing single image-to-3D creation methods typically involve a two-stage process, first generating multi-view images, and then using these images for 3D reconstruction. However, training these two stages separately leads to significant data bias in the inference phase, thus affecting the quality of reconstructed results. We introduce a unified 3D generation framework, named Ouroboros3D, which integrates diffusion-based multi-view image generation and 3D reconstruction into a recursive diffusion process. In our framework, these two modules are jointly trained through a self-conditioning mechanism, allowing them to adapt to each other's characteristics for robust inference. During the multi-view denoising process, the multi-view diffusion model uses the 3D-aware maps rendered by the reconstruction module at the previous timestep as additional conditions. The recursive diffusion framework with 3D-aware feedback unites the entire process and improves geometric consistency. Experiments show that our framework outperforms separation of these two stages and existing methods that combine them at the inference phase.
+          </p>
+        </div>
+      </div>
+    </div>
+    <!--/ Abstract. -->
+
+    <!-- Paper video. -->
+    <!-- <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Video</h2>
+        <div class="publication-video">
+          <iframe src="https://www.youtube.com/embed/MrKrnHhk8IA?rel=0&amp;showinfo=0"
+                  frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        </div>
+      </div>
+    </div> -->
+    <!--/ Paper video. -->
+  </div>
+</section>
+
+<section class="">
+  <div class="container is-max-desktop">
+    <!-- Method. -->
+    <div>
+      <div class="is-centered has-text-centered">
+        <h2 class="title is-3">3D-aware Recursive Diffusion</h2>
+      </div>
+      <div class="hero-body" style="padding-bottom: 0; padding-left: 100px">
+        <img src="./static/images/pipeline-comparison.png" alt="concept comparison" height="100%">
+      </div>
+      <div class="columns is-centered has-text-centered" style="padding-bottom: 3rem">
+        <div class="column is-four-fifths">
+          <div class="content has-text-justified">
+            <p>
+              <b>Concept comparison</b> between Ouroboros3D and previous two-stage methods. Instead of directly combining multi-view diffusion model and reconstruction model, our self-conditioned framework involves joint training of these two models and establish them as a recursive association. At each step of the denoising process, the rendered 3D-aware maps are fed to the multi-view generation in the next step.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--/ Method. -->
+  </div>
+</section>
+
+<section class="">
+  <div class="container is-max-desktop">
+    <!-- Method. -->
+    <div>
+      <div class="is-centered has-text-centered">
+        <h2 class="title is-3">Method</h2>
+      </div>
+      <div class="hero-body" style="padding-bottom: 0; padding-left: 100px">
+        <img src="./static/images/pipeline.png" alt="Method Overview" height="100%">
+      </div>
+      <div class="columns is-centered has-text-centered" style="padding-bottom: 3rem">
+        <div class="column is-four-fifths">
+          <div class="content has-text-justified">
+            <p>
+              Overview of <span class="dnerf">Ouroboros3D</span>. In the denoising sampling loop, we decode the predicted x0 to noise-corrupted images, which are then used to recover 3D representation by a feed-forward reconstruction model. Then the rendered color images and coordinates maps are encoded and fed into the next denoising step.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--/ Method. -->
+  </div>
+</section>
+
+<section class="">
+  <div class="container is-max-desktop">
+    <div>
+      <div class="is-centered has-text-centered">
+        <h2 class="title is-3">Results on GSO Dataset</h2>
+      </div>
+      <div class="hero-body">
+        <video width="100%" playsinline="" autoplay="autoplay" loop="loop" preload="" muted="">
+          <source src="./static/video/gso_video.mp4" type="video/mp4">
+        </video>
+      </div>
+    </div>
+
+    <div>
+      <div class="is-centered has-text-centered">
+        <h2 class="title is-3">More results</h2>
+      </div>
+      <div class="hero-body"  style="padding-bottom: 0;">
+        <video width="100%" playsinline="" autoplay="autoplay" loop="loop" preload="" muted="">
+          <source src="./static/video/video_ood.mp4" type="video/mp4">
+        </video>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <div class="has-text-centered">
+      <h2 class="title">BibTeX</h2>
+    </div>
+    <div class="columns is-centered has-text-centered" style="padding-bottom: 1.5rem">
+      <div class="column is-four-fifths">
+        <div class="content has-text-justified">
+<pre><code>@article{
+}</code></pre>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<footer class="footer">
+  <div class="container">
+    <div class="content has-text-centered">
+      <a class="icon-link"
+         href="">
+        <i class="fas fa-file-pdf"></i>
+      </a>
+      <a class="icon-link" href="https://github.com/Costwen/Ouroboros3D" class="external-link" disabled>
+        <i class="fab fa-github"></i>
+      </a>
+    </div>
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+          <p style="text-align: center;">
+            The website template is borrowed from <a href="https://nerfies.github.io/" target="_blank">Nerfies</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
