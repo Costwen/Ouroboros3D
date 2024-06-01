@@ -93,7 +93,7 @@
           <div class="column has-text-centered">
             <div class="publication-links">
               <!-- PDF Link. -->
-              <span class="link-block">
+              <!-- <span class="link-block">
                 <a href="" target="_blank"
                    class="external-link button is-normal is-rounded is-dark">
                   <span class="icon">
@@ -101,7 +101,7 @@
                   </span>
                   <span>Paper</span>
                 </a>
-              </span>
+              </span> -->
               <span class="link-block">
                 <a href="" target="_blank"
                    class="external-link button is-normal is-rounded is-dark">
@@ -159,21 +159,7 @@
   </div>
 </section>
 
-<section class="hero teaser">
-  <div class="container is-max-desktop">
-    <div class="hero-body">
-      <video width="100%" playsinline="" autoplay="autoplay" loop="loop" preload="" muted="">
-        <source src="./static/video/teaser.mp4" type="video/mp4">
-      </video>
-      <h2 class="subtitle has-text-centered">
-        <span class="dnerf">Ouroboros3D</span>
-      </h2>
-    </div>
-  </div>
-</section>
-
-
-<section class="section">
+<section class="" style="padding-bottom: 3rem">
   <div class="container is-max-desktop">
     <!-- Abstract. -->
     <div class="columns is-centered has-text-centered">
@@ -204,15 +190,30 @@
 
 <section class="">
   <div class="container is-max-desktop">
-    <!-- Method. -->
+    <div>
+      <div class="is-centered has-text-centered">
+        <h2 class="title is-3">Image-to-3D</h2>
+      </div>
+      <div class="hero-body"  style="padding-bottom: 3rem">
+        <video width="100%" playsinline="" autoplay="autoplay" loop="loop" preload="" muted="">
+          <source src="./static/video/video_ood.mp4" type="video/mp4">
+        </video>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section class="">
+  <div class="container is-max-desktop">
     <div>
       <div class="is-centered has-text-centered">
         <h2 class="title is-3">3D-aware Recursive Diffusion</h2>
       </div>
-      <div class="hero-body" style="padding-bottom: 0; padding-left: 100px">
+      <div class="hero-body" style="padding-bottom: 0; padding-left: 100px; padding-right: 100px">
         <img src="./static/images/pipeline-comparison.png" alt="concept comparison" height="100%">
       </div>
-      <div class="columns is-centered has-text-centered" style="padding-bottom: 3rem">
+      <div class="columns is-centered has-text-centered">
         <div class="column is-four-fifths">
           <div class="content has-text-justified">
             <p>
@@ -221,8 +222,26 @@
           </div>
         </div>
       </div>
+
+      <div style="padding-left: 100px; padding-right: 100px; padding-bottom: 0">
+        <img src="./static/images/recursive-diffusion.png" alt="recursive diffusion" height="100%">
+      </div>
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <div class="content has-text-justified">
+            <p>
+              <b>Concept of 3D-aware recursive diffusion.</b> During multi-view denoising, the diffusion model uses 3D-aware maps rendered by the reconstruction module at the previous step as conditions.
+            </p>
+          </div>
+        </div>
+      </div>
+      <div style="padding-bottom: 3rem">
+        <video width="100%" playsinline="" autoplay="autoplay" loop="loop" preload="" muted="">
+          <source src="./static/video/video-recursive.mp4" type="video/mp4">
+        </video>
+      </div>
+
     </div>
-    <!--/ Method. -->
   </div>
 </section>
 
@@ -231,7 +250,7 @@
     <!-- Method. -->
     <div>
       <div class="is-centered has-text-centered">
-        <h2 class="title is-3">Method</h2>
+        <h2 class="title is-3">Method Overview</h2>
       </div>
       <div class="hero-body" style="padding-bottom: 0; padding-left: 100px">
         <img src="./static/images/pipeline.png" alt="Method Overview" height="100%">
@@ -262,18 +281,19 @@
         </video>
       </div>
     </div>
+  </div>
 
+  <div class="container is-max-desktop">
     <div>
       <div class="is-centered has-text-centered">
-        <h2 class="title is-3">More results</h2>
+        <h2 class="title is-3">More Results</h2>
       </div>
-      <div class="hero-body"  style="padding-bottom: 0;">
+      <div class="hero-body">
         <video width="100%" playsinline="" autoplay="autoplay" loop="loop" preload="" muted="">
-          <source src="./static/video/video_ood.mp4" type="video/mp4">
+          <source src="./static/video/video-genshin.mp4" type="video/mp4">
         </video>
       </div>
     </div>
-
   </div>
 </section>
 
