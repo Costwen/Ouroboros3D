@@ -2,7 +2,7 @@
 
 [WIP] Ouroboros3D: Image-to-3D Generation via 3D-aware Recursive Diffusion
 
-## 🏠 [Project Page]() | [Paper]()
+## 🏠 [Project Page](https://costwen.github.io/Ouroboros3D/) | [Paper]()
 
 TL;DR. _Ouroboros3D, a unified 3D generation framework, which integrates diffusion-based multi-view image generation and 3D reconstruction into a recursive diffusion process. During the multi-view denoising process, the multi-view diffusion model uses the 3D-aware maps rendered by the reconstruction module at the previous timestep as additional conditions._
 
