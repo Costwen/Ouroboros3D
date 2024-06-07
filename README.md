@@ -24,7 +24,7 @@ If you find this repository useful, please consider citing:
 
 ```
 @article{wen2024ouroboros3d,
-  title={Ouroboros3D: Image-to-3D Generation via 3D-aware Recursive Diffusio},
+  title={Ouroboros3D: Image-to-3D Generation via 3D-aware Recursive Diffusion},
   author={Wen, Hao and Huang, Zehuan and Wang, Yaohui and Chen, Xinyuan and Qiao, Yu and Sheng, Lu},
   journal={arXiv preprint arXiv:2406.03184},
   year={2024}
