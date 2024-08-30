@@ -1,0 +1,37 @@
+recon_model:
+  _target_: src.models.network.lgm.models.LGM
+  num_frames: 4
+  opt:
+    _target_: src.models.network.lgm.options.Options
+    input_size: 256
+    up_channels: [1024, 1024, 512, 256, 128]
+    up_attention: [True, True, True, False, False]
+    splat_size: 128
+    output_size: 512
+    batch_size: 8
+    num_views: 8
+    gradient_accumulation_steps: 1
+    mixed_precision: fp16
+
+mv_model:
+  _target_: src.models.unet.mv_unet.MVModel
+  cond_encoder:
+    - _target_: src.models.unet.adaptor.Adapter_XL
+      cin: 192 # 3 x 8 x 8
+      # cin: 768 # 16 x 16 x 3
+      # cin: 1024 # 16 x 16 x 4 = 1024
+      channels: [320, 640, 1280, 1280]
+      sk: True
+      use_conv: False
+      ksize: 1
+    - _target_: src.models.unet.adaptor.Adapter_XL
+      cin: 192 # 3 x 8 x 8
+      # cin: 768 # 16 x 16 x 3
+      # cin: 1024 # 16 x 16 x 4 = 1024
+      channels: [320, 640, 1280, 1280]
+      sk: True
+      use_conv: False
+      ksize: 1
+      
+  add_plucker: True
+  _partial_: True

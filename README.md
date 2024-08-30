@@ -10,6 +10,34 @@ TL;DR. _Ouroboros3D, a unified 3D generation framework, which integrates diffusi
 
 ![img:pipeline](assets/overview.png)
 
+## Updata
+
+- 2024-08-30: we released the training code, inference code, and model checkpoint of our baseline, Ouroboros3D.
+
+## 🔧 Installation
+
+Just one command to prepare training and test environments:
+```Bash
+pip install -r requirements.txt
+```
+
+## Preparation for training
+
+We render 2 16-frame RGBA orbits at 512 × 512. For each orbit, the cameras are
+positioned at a randomly sampled elevation between [-5, 30] degrees. You can rendering any 
+
+```Bash
+|
+|-- 0a0c7e40a66d4fd090f549599f2f2c9d # object id
+| |-- render_0000.webp
+| |-- ...
+| |-- meta.json # meta info
+|-- train.txt
+|-- ...
+```
+
+
+
 ## 🤝 Acknowledgement
 
 We appreciate the open source of the following projects:

@@ -1,0 +1,5 @@
+{
+    "zero_optimization": {
+        "ignore_unused_parameters": true
+    }
+}
