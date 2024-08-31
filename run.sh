@@ -10,7 +10,7 @@ function train(){
 }
 
 function infer(){
-    $infer_cmd python infer.py --config configs/mv/infer.yaml --input testset/knife.png
+    $infer_cmd python inference.py --config configs/mv/infer.yaml --input testset/genshin_009.png
 }
 
 $1
