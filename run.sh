@@ -6,8 +6,13 @@ function train(){
     $train_cmd train.py --config configs/mv/svd_lgm_rgb_ccm_lvis.yaml
 }
 
-function infer(){
-    python infer.py --config configs/mv/infer.yaml --input testset/knife.png
+function inference(){
+    python inference.py \
+        --input testset/3d_arena_a_black_t-shirt_with_the_peace_sign_on_it.png \
+        --checkpoint /path/to/checkpoint \
+        --output workspace \
+        --seed 42 \
+        --config configs/mv/infer.yaml
 }
 
 $1
