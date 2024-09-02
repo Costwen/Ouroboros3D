@@ -1,6 +1,6 @@
 # Ouroboros3D
 
-[WIP] Ouroboros3D: Image-to-3D Generation via 3D-aware Recursive Diffusion
+Ouroboros3D: Image-to-3D Generation via 3D-aware Recursive Diffusion
 
 ## 🏠 [Project Page](https://costwen.github.io/Ouroboros3D/) | [Paper](https://arxiv.org/abs/2406.03184)
 
