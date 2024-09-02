@@ -37,6 +37,35 @@ positioned at a randomly sampled elevation between [-5, 30] degrees. You can ren
 ```
 
 
+After preparing the data, you can to modify the config file `configs/mv/svd_lgm_rgb_ccm_lvis.yaml` to meet your needs.
+
+To train on one node, please use:
+```Bash
+torchrun --nnodes=1 --nproc_per_node=8 train.py --config /path/to/your-config.yaml
+```
+or use 
+
+```Bash
+./run.sh train
+```
+
+You can modify the `run.sh` to meets your requirements.
+
+During training, you will see the validation results in both `output_dir` and logger. You can choose `wandb` or `tensorboard`.
+
+## Inference
+
+
+```
+python inference.py \
+--config configs/baseline.yaml \
+--ckpt /path/to/checkpoint \
+--input_img testset/3D_Dollhouse_Lamp.webp \
+--output_dir outputs \
+--elevation 30 \
+--seed 0 \
+--device cuda
+```
 
 ## 🤝 Acknowledgement
 
