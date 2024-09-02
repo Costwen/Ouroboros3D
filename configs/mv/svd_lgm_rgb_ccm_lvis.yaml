@@ -1,0 +1,143 @@
+name: o3d
+tags: ["o3d"]
+description: ""
+version: 'svd_lgm+multi-t2iadapter-rgb-ccm+plucker-lvis' # if not specified, will be set to version_{index}
+output_dir: "outputs/${name}"
+
+extras:
+  resolution: 512
+  bg_color: white
+  root_dir: data/lvis
+  meta_file: meta.json
+  ids_file: data/lvis/train.txt
+  num_frames: 4
+  video_frames: 8
+
+seed: 42
+# resume: outputs/nips/svd_lgm+multi-t2iadapter-rgb-ccm+plucker/checkpoints/epoch=2-step=20000.ckpt
+data:
+  _target_: src.data.multiview_blender.MultiViewDataModule
+  train_dataset:
+    _target_: src.data.multiview_blender.MultiViewDataset
+    root_dir: ${extras.root_dir}
+    meta_file: ${extras.meta_file}
+    bg_color: ${extras.bg_color}
+    num_frames: ${extras.video_frames}
+    ids_file: ${extras.ids_file}
+    img_wh: 
+      - ${extras.resolution}
+      - ${extras.resolution}
+    repeat: 1000
+    num_samples: 1000
+  train_batch_size: 1
+  val_dataset:
+    _target_: src.data.multiview_blender.MultiViewDataset
+    root_dir: ${extras.root_dir}
+    meta_file: ${extras.meta_file}
+    bg_color: ${extras.bg_color}
+    num_frames: ${extras.video_frames}
+    ids_file: ${extras.ids_file}
+    img_wh: 
+      - ${extras.resolution}
+      - ${extras.resolution}
+    repeat: 1
+    num_samples: 10
+  val_batch_size: 1
+  test_dataset:
+    _target_: src.data.multiview_blender.MultiViewDataset
+    root_dir: ${extras.root_dir}
+    meta_file: ${extras.meta_file}
+    bg_color: ${extras.bg_color}
+    num_frames: ${extras.video_frames}
+    ids_file: ${extras.ids_file}
+    img_wh: 
+      - ${extras.resolution}
+      - ${extras.resolution}
+    repeat: 1
+  test_batch_size: 1
+  num_workers: 8
+  pin_memory: False
+
+system:
+  _target_: src.systems.mv_diffusion.svd_lgm_multi_t2iadapter.SVDSystem
+  lr: 1.0e-5
+  base_model_id: stabilityai/stable-video-diffusion-img2vid
+  recon_model_path: pretrain/LGM/model_fp16.safetensors
+  variant: fp16
+  cfg: 0.1
+  mv_model:
+    _target_: src.models.unet.mv_unet.MVModel
+    cond_encoder:
+      - _target_: src.models.unet.adaptor.Adapter_XL
+        cin: 192 # 3 x 8 x 8
+        # cin: 768 # 16 x 16 x 3
+        # cin: 1024 # 16 x 16 x 4 = 1024
+        channels: [320, 640, 1280, 1280]
+        sk: True
+        use_conv: False
+        ksize: 1
+      - _target_: src.models.unet.adaptor.Adapter_XL
+        cin: 192 # 3 x 8 x 8
+        # cin: 768 # 16 x 16 x 3
+        # cin: 1024 # 16 x 16 x 4 = 1024
+        channels: [320, 640, 1280, 1280]
+        sk: True
+        use_conv: False
+        ksize: 1
+    add_plucker: True
+    _partial_: True
+
+  recon_model:
+    _target_: src.models.network.lgm.models.LGM
+    num_frames: ${extras.num_frames}
+    opt:
+      _target_: src.models.network.lgm.options.Options
+      input_size: 256
+      up_channels: [1024, 1024, 512, 256, 128]
+      up_attention: [True, True, True, False, False]
+      splat_size: 128
+      output_size: 512
+      batch_size: 8
+      num_views: 8
+      gradient_accumulation_steps: 1
+      mixed_precision: fp16
+
+trainer:
+  _target_: lightning.pytorch.trainer.Trainer
+  default_root_dir: ${output_dir}
+  max_steps: 40000
+  # check_val_every_n_epoch: 8
+  val_check_interval: 100
+  accumulate_grad_batches: 4
+  log_every_n_steps: 10
+  num_sanity_val_steps: 1
+  enable_progress_bar: true
+  # strategy: ddp_find_unused_parameters_true
+  # strategy: deepspeed_stage_1
+  strategy:
+    _target_: lightning.pytorch.strategies.DeepSpeedStrategy
+    config: config.json
+  devices: 1
+  num_nodes: 1
+  precision: 16-mixed
+  gradient_clip_val: 1
+
+callbacks:
+  model_checkpoint:
+    _target_: lightning.pytorch.callbacks.ModelCheckpoint
+    save_top_k: -1
+    every_n_train_steps: 5000
+    dirpath: "${output_dir}/${version}/checkpoints"
+
+logger:
+  # wandb:
+  #   _target_: lightning.pytorch.loggers.wandb.WandbLogger
+  #   project: "${name}"
+  #   save_dir: ${output_dir}
+  #   name: "${version}"
+  tensorboard:
+    _target_: lightning.pytorch.loggers.tensorboard.TensorBoardLogger
+    save_dir: "${output_dir}"
+    name: ""
+    version: "${version}"
+    sub_dir: "tb_logs"
