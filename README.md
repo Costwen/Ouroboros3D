@@ -41,7 +41,7 @@ After preparing the data, you can to modify the config file `configs/mv/svd_lgm_
 
 To train on one node, please use:
 ```Bash
-torchrun --nnodes=1 --nproc_per_node=8 train.py --config /path/to/your-config.yaml
+torchrun --nnodes=1 --nproc_per_node=8 train.py --config configs/mv/svd_lgm_rgb_ccm_lvis.yaml
 ```
 or use 
 
