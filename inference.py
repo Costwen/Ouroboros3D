@@ -19,12 +19,15 @@ from kiui.cam import orbit_camera
 from omegaconf import OmegaConf
 from safetensors.torch import load_file
 from tqdm import tqdm
-from src.models.unet.models.unet_spatio_temporal_condition import UNetSpatioTemporalConditionModel
+from src.models.unet.models.unet_spatio_temporal_condition import (
+    UNetSpatioTemporalConditionModel,
+)
 from src.utils.geometry import get_position_map
 import torchvision
 from kiui.op import recenter
 
 bg_remover = rembg.new_session()
+
 
 def _encode_cond(image, do_classifier_free_guidance=False):
     device, dtype = image.device, image.dtype
@@ -126,11 +129,10 @@ def generate_images(batch, num_inference_steps, do_classifier_free_guidance=True
 
     image_embeddings = _encode_cond(condition_image, do_classifier_free_guidance=True)
 
-
     condition_image = condition_image + torch.randn_like(condition_image) * 0.02
     cond_image_latent = pipeline._encode_vae_image(
         condition_image, device, 1, do_classifier_free_guidance=False
-    ) 
+    )
 
     cond_image_latent = repeat(cond_image_latent, "b c h w -> b f c h w", f=num_frames)
     if do_classifier_free_guidance:
@@ -166,8 +168,7 @@ def generate_images(batch, num_inference_steps, do_classifier_free_guidance=True
     )
 
     cond = [torch.zeros((b, m, c, h, w), device=device, dtype=dtype) for _ in range(2)]
-    
-    
+
     with torch.amp.autocast(enabled=True, device_type="cuda", dtype=torch.float16):
         for i, t in enumerate(tqdm(timesteps)):
             # expand the latents if we are doing classifier free guidance
@@ -226,7 +227,7 @@ def generate_images(batch, num_inference_steps, do_classifier_free_guidance=True
                 resolution=depth.shape[-1],
             )
             cond = [recon_results["images_pred"], position_map]
-                
+
             latents = output.prev_sample
 
         cond = recon_results["images_pred"].to(dtype)
@@ -238,6 +239,7 @@ def generate_images(batch, num_inference_steps, do_classifier_free_guidance=True
 
         return images_pred, cond[:, :, :3], recon_results
 
+
 def process(input_path, input_num_steps=25, input_seed=42):
 
     # seed
@@ -245,26 +247,31 @@ def process(input_path, input_num_steps=25, input_seed=42):
 
     os.makedirs(workspace, exist_ok=True)
     image_name = os.path.basename(input_path).split(".")[0]
-    output_image_path = os.path.join(workspace, image_name+'.png')
-    output_video_path = os.path.join(workspace, image_name+'.mp4')
-    output_ply_path = os.path.join(workspace, image_name+'.ply')
+    input_image_path = os.path.join(workspace, image_name + "_input.png")
+    output_image_path = os.path.join(workspace, image_name + ".png")
+    output_video_path = os.path.join(workspace, image_name + ".mp4")
+    output_ply_path = os.path.join(workspace, image_name + ".ply")
 
-    input_image = kiui.read_image(input_path, mode='uint8')
+    input_image = kiui.read_image(input_path, mode="uint8")
 
     # bg removal
-    carved_image = rembg.remove(input_image, session=bg_remover) # [H, W, 4]
+    carved_image = rembg.remove(input_image, session=bg_remover)  # [H, W, 4]
     mask = carved_image[..., -1] > 0
 
     # recenter
     image = recenter(carved_image, mask, border_ratio=0.2)
-    
+
     # generate mv
-    image = image.astype(np.float32) / 255.0 * 2 - 1
+    image = image.astype(np.float32) / 255.0
 
     # rgba to rgb white bg
     if image.shape[-1] == 4:
         image = image[..., :3] * image[..., 3:4] + (1 - image[..., 3:4])
-    
+
+    # save input image
+    imageio.imwrite(input_image_path, (image * 255).astype(np.uint8))
+
+    image = image * 2 - 1
 
     image = rearrange(torch.from_numpy(image), "h w c -> 1 c h w").to(device)
 
@@ -300,7 +307,6 @@ def process(input_path, input_num_steps=25, input_seed=42):
     elevation = 0
 
     azimuth = np.arange(0, 360, 2, dtype=np.int32)
-
 
     fovy: float = 49.1
     tan_half_fov = np.tan(0.5 * np.deg2rad(fovy))
@@ -349,26 +355,36 @@ def process(input_path, input_num_steps=25, input_seed=42):
     imageio.mimwrite(output_video_path, images, fps=30)
 
 
-
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--input", type=str, help="Path to the input image")
-    parser.add_argument("--num_inference_steps", type=int, default=25, help="Number of inference steps")
-    parser.add_argument("--workspace", type=str, default='workspace', help='Path to results')
-    parser.add_argument("--config", type=str, default='hyper/config.yaml', help="Path to the configuration file") 
-    parser.add_argument("--seed", type=int, default=43, help="Seed") 
-    
+    parser.add_argument(
+        "--num_inference_steps", type=int, default=25, help="Number of inference steps"
+    )
+    parser.add_argument(
+        "--checkpoint",
+        type=str,
+        default="checkpoint",
+        help="Path to the model checkpoint directory",
+    )
+    parser.add_argument("--output", type=str, default="outputs", help="Path to results")
+    parser.add_argument(
+        "--config",
+        type=str,
+        default="configs/mv/infer.yaml",
+        help="Path to the configuration file",
+    )
+    parser.add_argument("--seed", type=int, default=42, help="Seed")
+
     args = parser.parse_args()
 
     conf = OmegaConf.load(args.config)
-    workspace = args.workspace
+    workspace = args.output
 
-    mv_model_ckpt = "mv_model_unet.pth"
-    recon_model_ckpt = "recon_model_unet.pth"
+    mv_model_ckpt = os.path.join(args.checkpoint, "mv_model_unet.pth")
+    recon_model_ckpt = os.path.join(args.checkpoint, "recon_model.pth")
 
-    base_model_id: str = (
-        "stabilityai/stable-video-diffusion-img2vid"
-    )
+    base_model_id: str = "stabilityai/stable-video-diffusion-img2vid"
 
     if torch.cuda.is_available():
         device = "cuda:0"
@@ -377,7 +393,9 @@ if __name__ == "__main__":
 
     variant = "fp16"
 
-    pipeline = StableVideoDiffusionPipeline.from_pretrained(base_model_id, variant=variant)
+    pipeline = StableVideoDiffusionPipeline.from_pretrained(
+        base_model_id, variant=variant
+    )
     unet = UNetSpatioTemporalConditionModel.from_pretrained(
         base_model_id, subfolder="unet", variant=variant
     )
@@ -391,12 +409,11 @@ if __name__ == "__main__":
     recon_model = hydra.utils.instantiate(conf.recon_model)
 
     # Load the model weights
-    # mv_model.load_state_dict(torch.load(mv_model_ckpt, map_location="cpu"))
-    # recon_model.load_state_dict(torch.load(recon_model_ckpt, map_location="cpu"))
+    mv_model.load_state_dict(torch.load(mv_model_ckpt, map_location="cpu"))
+    recon_model.load_state_dict(torch.load(recon_model_ckpt, map_location="cpu"))
 
     mv_model = mv_model.to(device)
     recon_model = recon_model.to(device)
     pipeline = pipeline.to(device)
 
     process(args.input, args.num_inference_steps, args.seed)
-
