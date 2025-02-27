@@ -11,6 +11,7 @@ TL;DR. _Ouroboros3D, a unified 3D generation framework, which integrates diffusi
 ![img:pipeline](assets/overview.png)
 
 ## Updata
+- 2025-02-27: We are excited to announce that our paper has been accepted to CVPR 2025! 🎉
 - 2024-09-02: We released the baseline model for `svd & lgm` in [checkpoint](https://huggingface.co/huanngzh/Ouroboros3D-SVD-LGM)
 - 2024-08-30: we released the training code, inference code, and model checkpoint of our baseline, Ouroboros3D.
 
