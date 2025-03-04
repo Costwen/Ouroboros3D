@@ -1,6 +1,6 @@
 # Ouroboros3D
 
-[WIP] Ouroboros3D: Image-to-3D Generation via 3D-aware Recursive Diffusion
+[CVPR2025] Ouroboros3D: Image-to-3D Generation via 3D-aware Recursive Diffusion
 
 ## 🏠 [Project Page]() | [Paper]()
 
