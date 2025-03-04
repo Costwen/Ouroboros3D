@@ -8,7 +8,7 @@ TL;DR. _Ouroboros3D, a unified 3D generation framework, which integrates diffusi
 
 ## 🔨 Method Overview
 
-![img:pipeline](assets/overview.png)
+![image](https://github.com/user-attachments/assets/47ee15a2-38c1-4d1a-b6cd-41b62b0a285d)
 
 ## 🤝 Acknowledgement
 
